@@ -9,8 +9,6 @@ public class SyncroniseBlock : Block, IBlockWithText
 
     public int UniqueId { get; set; }
 
-
-
     public virtual string GetText()
     {
         return string.Empty;
@@ -20,7 +18,7 @@ public class SyncroniseBlock : Block, IBlockWithText
     {
         return string.Empty;
     }
-    
+
     public void SetUniqueId()
     {
         if (UniqueId <= 0) UniqueId = MainConstruct.iUniqueIdentifierCreator.CheckOutANewUniqueId();
@@ -28,9 +26,12 @@ public class SyncroniseBlock : Block, IBlockWithText
 
     public void SyncroniseDataUpLoad()
     {
-        SetUniqueId();
+        string TextData = GetText();
+
+        if (TextData != string.Empty) SetUniqueId();
+
         GetExtraInfo(new ExtraInfoArrayWritePackage());
-        string NewSyncroniseData = String.Join(",", ExtraInfoArrayWritePackage.DataArray.Select(D => D.ToString()).ToArray()) + Delimiter + GetText();
+        string NewSyncroniseData = String.Join(",", ExtraInfoArrayWritePackage.DataArray.Select(D => D.ToString()).ToArray()) + Delimiter + TextData;
 
         if (NewSyncroniseData != SyncroniseData)
         {
@@ -50,7 +51,7 @@ public class SyncroniseBlock : Block, IBlockWithText
             SetText(SDA[1]);
         }
     }
-    
+
     public override void StateChanged(IBlockStateChange change)
     {
         base.StateChanged(change);
