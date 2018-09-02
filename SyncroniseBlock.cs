@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using UnityEngine;
 
 public class SyncroniseBlock : Block, IBlockWithText
 {
@@ -7,7 +8,30 @@ public class SyncroniseBlock : Block, IBlockWithText
 
     private string Delimiter = "#=Delimiter9128347=#";
 
+    private int StartTime = 0;
+
     public int UniqueId { get; set; }
+    
+
+
+    public void SetUniqueId(int NewUniqueId)
+    {
+        if (Time.frameCount == StartTime) UniqueId = NewUniqueId;
+    }
+    
+    public void SyncroniseDataUpLoad()
+    {
+        GetExtraInfo(new ExtraInfoArrayWritePackage());
+        string NewSyncroniseData = String.Join(",", ExtraInfoArrayWritePackage.DataArray.Select(D => D.ToString()).ToArray()) + Delimiter + GetText();
+
+        if (NewSyncroniseData != SyncroniseData)
+        {
+            SyncroniseData = NewSyncroniseData;
+            GetConstructableOrSubConstructable().iMultiplayerSyncroniser.RPCRequest_SyncroniseBlock(this, SyncroniseData);
+        }
+    }
+
+
 
     public virtual string GetText()
     {
@@ -19,26 +43,7 @@ public class SyncroniseBlock : Block, IBlockWithText
         return string.Empty;
     }
 
-    public void SetUniqueId()
-    {
-        if (UniqueId <= 0) UniqueId = MainConstruct.iUniqueIdentifierCreator.CheckOutANewUniqueId();
-    }
 
-    public void SyncroniseDataUpLoad()
-    {
-        string TextData = GetText();
-
-        if (TextData != string.Empty) SetUniqueId();
-
-        GetExtraInfo(new ExtraInfoArrayWritePackage());
-        string NewSyncroniseData = String.Join(",", ExtraInfoArrayWritePackage.DataArray.Select(D => D.ToString()).ToArray()) + Delimiter + TextData;
-
-        if (NewSyncroniseData != SyncroniseData)
-        {
-            SyncroniseData = NewSyncroniseData;
-            GetConstructableOrSubConstructable().iMultiplayerSyncroniser.RPCRequest_SyncroniseBlock(this, SyncroniseData);
-        }
-    }
 
     public override void SyncroniseUpdate(string NewSyncroniseData)
     {
@@ -56,6 +61,11 @@ public class SyncroniseBlock : Block, IBlockWithText
     {
         base.StateChanged(change);
 
+        if (UniqueId == 0)
+        {
+            UniqueId = MainConstruct.iUniqueIdentifierCreator.CheckOutANewUniqueId();
+            StartTime = Time.frameCount;
+        }
         if (change.InitiatedOrInitiatedInUnrepairedState_OnlyCalledOnce)
         {
             GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);
