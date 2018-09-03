@@ -11,14 +11,16 @@ public class SyncroniseBlock : Block, IBlockWithText
     private int StartTime = 0;
 
     public int UniqueId { get; set; }
-    
+
+    public bool BlockWithText;
+
 
 
     public void SetUniqueId(int NewUniqueId)
     {
         if (Time.frameCount == StartTime) UniqueId = NewUniqueId;
     }
-    
+
     public void SyncroniseDataUpLoad()
     {
         GetExtraInfo(new ExtraInfoArrayWritePackage());
@@ -61,18 +63,21 @@ public class SyncroniseBlock : Block, IBlockWithText
     {
         base.StateChanged(change);
 
-        if (UniqueId == 0)
+        if (BlockWithText)
         {
-            UniqueId = MainConstruct.iUniqueIdentifierCreator.CheckOutANewUniqueId();
-            StartTime = Time.frameCount;
-        }
-        if (change.InitiatedOrInitiatedInUnrepairedState_OnlyCalledOnce)
-        {
-            GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);
-        }
-        else if (change.IsPerminentlyRemovedOrConstructDestroyed)
-        {
-            GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Remove(this);
+            if (UniqueId == 0)
+            {
+                UniqueId = MainConstruct.iUniqueIdentifierCreator.CheckOutANewUniqueId();
+                StartTime = Time.frameCount;
+            }
+            if (change.InitiatedOrInitiatedInUnrepairedState_OnlyCalledOnce)
+            {
+                GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);
+            }
+            else if (change.IsPerminentlyRemovedOrConstructDestroyed)
+            {
+                GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Remove(this);
+            }
         }
     }
 }
