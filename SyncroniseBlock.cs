@@ -12,7 +12,7 @@ public class SyncroniseBlock : Block, IBlockWithText
 
     public int UniqueId { get; set; }
 
-    public bool BlockWithText = true;
+    public bool BlockWithText;
 
 
 
