@@ -6,7 +6,7 @@ public class SyncroniseBlock : Block, IBlockWithText
 {
     private string SyncroniseData = string.Empty;
 
-    private string Delimiter = "#=Delimiter9128347=#";
+    private string SyncroniseDataDelimiter = "#=Delimiter9128347=#";
 
     private int StartTime = 0;
 
@@ -24,7 +24,7 @@ public class SyncroniseBlock : Block, IBlockWithText
     public void SyncroniseDataUpLoad()
     {
         GetExtraInfo(new ExtraInfoArrayWritePackage());
-        string NewSyncroniseData = String.Join(",", ExtraInfoArrayWritePackage.DataArray.Select(D => D.ToString()).ToArray()) + Delimiter + GetText();
+        string NewSyncroniseData = String.Join(",", ExtraInfoArrayWritePackage.DataArray.Select(D => D.ToString()).ToArray()) + SyncroniseDataDelimiter + GetText();
 
         if (NewSyncroniseData != SyncroniseData)
         {
@@ -52,7 +52,7 @@ public class SyncroniseBlock : Block, IBlockWithText
         if (NewSyncroniseData != SyncroniseData)
         {
             SyncroniseData = NewSyncroniseData;
-            string[] SDA = SyncroniseData.Split(new string[] { Delimiter }, StringSplitOptions.None);
+            string[] SDA = SyncroniseData.Split(new string[] { SyncroniseDataDelimiter }, StringSplitOptions.None);
             ExtraInfoArrayReadPackage.DataArray = SDA[0].Split(',').Select(S => float.Parse(S)).ToArray();
             SetExtraInfo(new ExtraInfoArrayReadPackage(ExtraInfoArrayReadPackage.DataArray.Length, false));
             SetText(SDA[1]);
