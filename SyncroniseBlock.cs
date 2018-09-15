@@ -1,84 +1,86 @@
-//SyncroniseBlock Update 2018/09/07
-
 using System;
 using System.Linq;
 using UnityEngine;
 
-public class SyncroniseBlock : Block, IBlockWithText
+namespace Endless_Shapes.Blocks
 {
-    private string SyncroniseData = string.Empty;
-
-    private string SyncroniseDataDelimiter = "#=Delimiter9128347=#";
-
-    private int StartTime = 0;
-
-    public int UniqueId { get; set; }
-
-    public bool BlockWithText;
-
-
-
-    public void SetUniqueId(int NewUniqueId)
+    public class SyncroniseBlock : Block, IBlockWithText
     {
-        if (Time.frameCount == StartTime) UniqueId = NewUniqueId;
-    }
+        private string SyncroniseData = string.Empty;
 
-    public void SyncroniseDataUpLoad()
-    {
-        GetExtraInfo(new ExtraInfoArrayWritePackage());
-        string NewSyncroniseData = String.Join(",", ExtraInfoArrayWritePackage.DataArray.Select(D => D.ToString()).ToArray()) + SyncroniseDataDelimiter + GetText();
+        private string SyncroniseDataDelimiter = "<Delimiter 93529703>";
 
-        if (NewSyncroniseData != SyncroniseData)
+        private int StartTime = 0;
+
+        public int UniqueId { get; set; }
+
+        public bool BlockWithText;
+
+
+
+        public void SetUniqueId(int NewUniqueId)
         {
-            SyncroniseData = NewSyncroniseData;
-            GetConstructableOrSubConstructable().iMultiplayerSyncroniser.RPCRequest_SyncroniseBlock(this, SyncroniseData);
+            if (Time.frameCount == StartTime) UniqueId = NewUniqueId;
         }
-    }
 
-
-
-    public virtual string GetText()
-    {
-        return string.Empty;
-    }
-
-    public virtual string SetText(string str, bool sync = true)
-    {
-        return string.Empty;
-    }
-
-
-
-    public override void SyncroniseUpdate(string NewSyncroniseData)
-    {
-        if (NewSyncroniseData != SyncroniseData)
+        public void SyncroniseDataUpLoad()
         {
-            SyncroniseData = NewSyncroniseData;
-            string[] SDA = SyncroniseData.Split(new string[] { SyncroniseDataDelimiter }, StringSplitOptions.None);
-            ExtraInfoArrayReadPackage.DataArray = SDA[0].Split(',').Select(S => float.Parse(S)).ToArray();
-            SetExtraInfo(new ExtraInfoArrayReadPackage(ExtraInfoArrayReadPackage.DataArray.Length, false));
-            SetText(SDA[1]);
+            GetExtraInfo(new ExtraInfoArrayWritePackage());
+            string NewSyncroniseData = String.Join(",", ExtraInfoArrayWritePackage.DataArray.Select(D => D.ToString()).ToArray()) + SyncroniseDataDelimiter + GetText();
+
+            if (NewSyncroniseData != SyncroniseData)
+            {
+                SyncroniseData = NewSyncroniseData;
+                GetConstructableOrSubConstructable().iMultiplayerSyncroniser.RPCRequest_SyncroniseBlock(this, SyncroniseData);
+            }
         }
-    }
 
-    public override void StateChanged(IBlockStateChange change)
-    {
-        base.StateChanged(change);
 
-        if (BlockWithText)
+
+        public virtual string GetText()
         {
-            if (UniqueId == 0)
+            return string.Empty;
+        }
+
+        public virtual string SetText(string str, bool sync = true)
+        {
+            return string.Empty;
+        }
+
+
+
+        public override void SyncroniseUpdate(string NewSyncroniseData)
+        {
+            if (NewSyncroniseData != SyncroniseData)
             {
-                UniqueId = MainConstruct.iUniqueIdentifierCreator.CheckOutANewUniqueId();
-                StartTime = Time.frameCount;
+                SyncroniseData = NewSyncroniseData;
+                string[] SDA = SyncroniseData.Split(new string[] { SyncroniseDataDelimiter }, StringSplitOptions.None);
+                ExtraInfoArrayReadPackage.DataArray = SDA[0].Split(',').Select(S => double.Parse(S)).ToArray();
+                SetExtraInfo(new ExtraInfoArrayReadPackage(ExtraInfoArrayReadPackage.DataArray.Length, false));
+                SetText(SDA[1]);
             }
-            if (change.InitiatedOrInitiatedInUnrepairedState_OnlyCalledOnce)
+        }
+
+        public override void StateChanged(IBlockStateChange change)
+        {
+            base.StateChanged(change);
+
+            if (BlockWithText)
             {
-                GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);
-            }
-            else if (change.IsPerminentlyRemovedOrConstructDestroyed)
-            {
-                GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Remove(this);
+                if (change.InitiatedOrInitiatedInUnrepairedState_OnlyCalledOnce)
+                {
+                    if (UniqueId == 0)
+                    {
+                        UniqueId = MainConstruct.iUniqueIdentifierCreator.CheckOutANewUniqueId();
+                        StartTime = Time.frameCount;
+                    }
+
+                    GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);
+                }
+                else if (change.IsPerminentlyRemovedOrConstructDestroyed)
+                {
+                    GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Remove(this);
+                }
             }
         }
     }
