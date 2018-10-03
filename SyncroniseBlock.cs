@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Endless_Shapes.Blocks
+namespace EndlessShapes.Blocks
 {
     public class SyncroniseBlock : Block, IBlockWithText
     {
@@ -10,18 +10,19 @@ namespace Endless_Shapes.Blocks
 
         private string SyncroniseDataDelimiter = "<Delimiter 93529703>";
 
-        private int StartTime = 0;
+        private int StartTime;
 
-        public int UniqueId { get; set; }
+        private int uniqueId;
 
         public bool BlockWithText;
 
-
-
-        public void SetUniqueId(int NewUniqueId)
+        public int UniqueId
         {
-            if (Time.frameCount == StartTime) UniqueId = NewUniqueId;
+            get { return uniqueId; }
+            set { if (Time.frameCount == StartTime) uniqueId = value; }
         }
+
+
 
         public void SyncroniseDataUpLoad()
         {
@@ -69,12 +70,8 @@ namespace Endless_Shapes.Blocks
             {
                 if (change.InitiatedOrInitiatedInUnrepairedState_OnlyCalledOnce)
                 {
-                    if (UniqueId == 0)
-                    {
-                        UniqueId = MainConstruct.iUniqueIdentifierCreator.CheckOutANewUniqueId();
-                        StartTime = Time.frameCount;
-                    }
-
+                    StartTime = Time.frameCount;
+                    UniqueId = MainConstruct.UniqueIdsRestricted.CheckOutANewUniqueId();
                     GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);
                 }
                 else if (change.IsPerminentlyRemovedOrConstructDestroyed)
