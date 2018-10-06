@@ -18,8 +18,8 @@ namespace EndlessShapes.Blocks
 
         public int UniqueId
         {
-            get { return uniqueId; }
             set { if (Time.frameCount == StartTime) uniqueId = value; }
+            get { return uniqueId; }
         }
 
 
@@ -38,12 +38,12 @@ namespace EndlessShapes.Blocks
 
 
 
-        public virtual string GetText()
+        public virtual string SetText(string str, bool sync = true)
         {
             return string.Empty;
         }
 
-        public virtual string SetText(string str, bool sync = true)
+        public virtual string GetText()
         {
             return string.Empty;
         }
