@@ -1,34 +1,26 @@
-using BrilliantSkies.Core;
+using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Modding;
 using System;
+using System.IO;
 
-namespace TestMod
+public class ModPlugin : GamePlugin
 {
-    public class ModPlugin : GamePlugin, GamePlugin_PostLoad
+    public string name
     {
-        public string name
-        {
-            get { return "TestMod"; }
-        }
+        get { return "TestMod"; }
+    }
 
-        public Version version
-        {
-            get { return new Version(0, 0); }
-        }
+    public Version version
+    {
+        get { return new Version(0, 0); }
+    }
 
-        public void OnLoad()
-        {
-            SafeLogging.Log("Loaded " + name);
-        }
+    public void OnLoad()
+    {
+        ModProblem.AddModProblem(name, Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name), "Mod Version " + version, false);
+    }
 
-        public void OnSave()
-        {
-            SafeLogging.Log("Saved " + name);
-        }
-
-        public bool AfterAllPluginsLoaded()
-        {
-            return true;
-        }
+    public void OnSave()
+    {
     }
 }
