@@ -1,0 +1,200 @@
+～ExtraInfoの使い方～
+　float,int,bool,stringを保存できます。
+　内部ではWriteNextFloat,WriteNextInt,WriteNextBool,WriteNextStringで入力したデータをすべてdoubleに変換して、
+　doubleの配列（大きさは500）に格納しているようです。
+　WriteNextFloat,WriteNextInt,WriteNextBool,WriteNextStringを実行した順番通りに値が格納されます。
+
+例：────────────────────────────
+
+public override void SetExtraInfo(ExtraInfoArrayReadPackage v)
+{
+	base.SetExtraInfo(v);
+
+	if (v.FindDelimiterAndSpoolToIt(DelimiterType.BaseTier))
+	{
+		float変数1 = v.GetNextFloat();
+		int変数 = v.GetNextInt();
+		bool変数 = v.GetNextBool();
+		float変数2 = v.GetNextFloat();
+		float変数3 = v.GetNextFloat();
+	}
+}
+
+public override void GetExtraInfo(ExtraInfoArrayWritePackage v)
+{
+	base.GetExtraInfo(v);
+
+	v.AddDelimiterOpen(DelimiterType.BaseTier);
+	v.WriteNextFloat(float変数1);
+	v.WriteNextInt(int変数);
+	v.WriteNextBool(bool変数);
+	v.WriteNextFloat(float変数2);
+	v.WriteNextFloat(float変数3);
+	v.AddDelimiterClose(DelimiterType.BaseTier);
+}
+
+──────────────────────────────
+
+・SetExtraInfo
+　ビークルのロードや、ブロックデータのペーストで実行されます。
+
+・ExtraInfoArrayReadPackage.FindDelimiterAndSpoolToIt
+　ExtraInfoArrayWritePackage.AddDelimiterOpenで指定したデリミタが存在するかを返す。
+
+・ExtraInfoArrayReadPackage.GetNextFloat
+　ExtraInfoArrayWritePackage.GetExtraInfoで保存したfloatを取り出す。
+
+・ExtraInfoArrayReadPackage.GetNextInt
+　ExtraInfoArrayWritePackage.GetExtraInfoで保存したintを取り出す。
+
+・ExtraInfoArrayReadPackage.GetNextBool
+　ExtraInfoArrayWritePackage.GetExtraInfoで保存したboolを取り出す。
+
+・ExtraInfoArrayReadPackage.GetNextString
+　ExtraInfoArrayWritePackage.WriteNextStringで保存したstringを取り出す。
+
+・GetExtraInfo
+　ビークルのセーブや、ブロックデータのコピーで実行されます。
+
+・ExtraInfoArrayWritePackage.AddDelimiterOpen
+　デリミタを開く。
+
+・ExtraInfoArrayWritePackage.WriteNextFloat
+　floatを保存する。
+
+・ExtraInfoArrayWritePackage.WriteNextInt
+　intを保存する。
+
+・ExtraInfoArrayWritePackage.WriteNextBool
+　boolを保存する。
+
+・ExtraInfoArrayWritePackage.WriteNextString
+　Stringを保存する。
+
+・ExtraInfoArrayWritePackage.AddDelimiterClose
+　デリミタを閉じる。
+
+
+
+～BlockWithTextの使い方～
+　文字列を保存できます。
+　保存する文字列の長さに制限が無いのが特徴です。
+　IBlockWithTextを継承したり、UniqueIdをExtraInfoなどで保存しておいたり、
+　ブロック生成でGetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);
+　ブロック撤去でGetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Remove(this);
+　を実行する必要があったりと、ExtraInfoより複雑です。
+
+例：────────────────────────────
+
+int UniqueId { get; set; }
+
+public override void SetExtraInfo(ExtraInfoArrayReadPackage v)
+{
+	base.SetExtraInfo(v);
+
+	if (v.FindDelimiterAndSpoolToIt(DelimiterType.BaseTier))
+	{
+		UniqueId = v.GetNextInt();
+	}
+}
+
+public override void GetExtraInfo(ExtraInfoArrayWritePackage v)
+{
+	base.GetExtraInfo(v);
+
+	v.AddDelimiterOpen(DelimiterType.BaseTier);
+	v.WriteNextInt(UniqueId);
+	v.AddDelimiterClose(DelimiterType.BaseTier);
+}
+
+public override string SetText(string NewText, bool sync = true)
+{
+	string変数 = NewText;
+	return string.Empty;
+}
+
+public override string GetText()
+{
+	return string変数;
+}
+
+public override void StateChanged(IBlockStateChange change)
+{
+	base.StateChanged(change);
+
+	if (change.InitiatedOrInitiatedInUnrepairedState_OnlyCalledOnce)
+	{
+		GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);
+	}
+	else if (change.IsPerminentlyRemovedOrConstructDestroyed)
+	{
+		GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Remove(this);
+	}
+}
+
+──────────────────────────────
+
+・SetText
+　ビークルのロードや、ブロックデータのペーストで実行されます。
+　SetExtraInfoより後に実行されます。
+　引数のsyncや返り値のstringは、マルチプレイの同期で使うことが多いです。
+　（詳しくはILSpyで「SignPost」を覗いて見てください。）
+
+・GetText
+　ビークルのセーブや、ブロックデータのコピーで実行されます。
+　GetExtraInfoより後に実行されます。
+
+・StateChanged
+　ブロックの更新用メソッドです。
+　BlockWithTextとの直接の関係は無いので、ここで詳しい説明はしません。
+　ここでは
+　GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Add(this);と
+　GetConstructableOrSubConstructable().iBlocksWithText.BlocksWithText.Remove(this);
+　を実行するために使用しています。
+
+
+
+～Parametersの使い方～
+　Vector4を保存できます。
+　ExtraInfoで十分なので、最近追加されたブロックにはあまり使用されていません。
+　Parameters1とParameters2の二つが存在します。
+
+例：────────────────────────────
+
+public override void SetParameters1(Vector4 v)
+{
+	Vector4変数1 = v;
+}
+
+public override Vector4 GetParameters1()
+{
+	return Vector4変数1;
+}
+
+public override void SetParameters2(Vector4 v)
+{
+	Vector4変数2 = v;
+}
+
+public override Vector4 GetParameters2()
+{
+	return Vector4変数2;
+}
+
+──────────────────────────────
+
+・SetParameters1
+　ビークルのロードや、ブロックデータのペーストで実行されます。
+
+・GetParameters1
+　ビークルのセーブや、ブロックデータのコピーで実行されます。
+
+・SetParameters2
+　SetParameters1と同じ。
+
+・GetParameters2
+　GetParameters1と同じ。
+
+
+
+
