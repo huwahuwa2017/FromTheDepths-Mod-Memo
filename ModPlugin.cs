@@ -12,7 +12,7 @@ public class ModPlugin : GamePlugin
 
     public Version version
     {
-        get { return new Version(0, 0); }
+        get { return new Version(0, 0, 0); }
     }
 
     public void OnLoad()
