@@ -25,9 +25,6 @@ BHOutput = 0
 --設定ここから
 
 
---ComplexControl検出装置の基部のサブオブジェクトID
-AllCCDPID = {165}
-
 --前部砲塔のWeaponSlot
 ForwardWeaponSlot = 1
 
