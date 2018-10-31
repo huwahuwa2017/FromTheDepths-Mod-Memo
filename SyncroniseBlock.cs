@@ -16,6 +16,8 @@ namespace EndlessShapes.Blocks
 
         public bool BlockWithText;
 
+
+
         public int UniqueId
         {
             set { if (Time.frameCount == StartTime) uniqueId = value; }
@@ -52,6 +54,8 @@ namespace EndlessShapes.Blocks
 
         public override void SyncroniseUpdate(string NewSyncroniseData)
         {
+            base.SyncroniseUpdate(NewSyncroniseData);
+
             if (NewSyncroniseData != SyncroniseData)
             {
                 SyncroniseData = NewSyncroniseData;
@@ -59,6 +63,7 @@ namespace EndlessShapes.Blocks
                 ExtraInfoArrayReadPackage.DataArray = SDA[0].Split(',').Select(S => double.Parse(S)).ToArray();
                 SetExtraInfo(new ExtraInfoArrayReadPackage(ExtraInfoArrayReadPackage.DataArray.Length, false));
                 SetText(SDA[1]);
+                StuffChangedSyncIt();
             }
         }
 
