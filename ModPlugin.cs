@@ -15,9 +15,7 @@ public class ModPlugin : GamePlugin
     {
         get { return new Version(0, 0, 0); }
     }
-
-
-
+    
     public void OnLoad()
     {
         string FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name + "/plugin.json");
@@ -36,21 +34,19 @@ public class ModPlugin : GamePlugin
             JObject jObject = JObject.Parse(File.ReadAllText(FilePath));
             string ModVersion = version.ToString();
             string FTDGameVersion = Get.Game.VersionString;
-            bool Update = false;
+            
+            bool Result0 = jObject["name"].ToString() != name;
+            bool Result1 = jObject["version"].ToString() != ModVersion;
+            bool Result2 = jObject["gameversion"].ToString() != FTDGameVersion;
 
-            if (jObject["version"].ToString() != ModVersion)
+            if (Result0 || Result1 || Result2)
             {
-                jObject["version"] = ModVersion;
-                Update = true;
-            }
+                if (Result0) jObject["name"] = name;
+                if (Result1) jObject["version"] = ModVersion;
+                if (Result2) jObject["gameversion"] = FTDGameVersion;
 
-            if (jObject["gameversion"].ToString() != FTDGameVersion)
-            {
-                jObject["gameversion"] = FTDGameVersion;
-                Update = true;
+                File.WriteAllText(FilePath, jObject.ToString());
             }
-
-            if (Update) File.WriteAllText(FilePath, jObject.ToString());
         }
     }
 }
