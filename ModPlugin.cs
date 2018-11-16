@@ -8,7 +8,7 @@ public class ModPlugin : GamePlugin
 {
     public string name
     {
-        get { return "ManualAlignment"; }
+        get { return "TestMod"; }
     }
 
     public Version version
