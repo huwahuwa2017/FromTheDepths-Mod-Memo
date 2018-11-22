@@ -85,8 +85,10 @@ function Update(I)
 
   if VectorInvestigation then
     ZAVTCalculation(I)
-  else
-    ZeroAngleRotationCalculation(I)
+  elseif #AllSpinBlockStates > 0 then
+    if AllSpinBlockStates[1].ZAR == nil then
+      ZeroAngleRotationCalculation(I)
+    end
 
     SpinBlockControl(I, 1, 60)
     SpinBlockControl(I, 2, 120)
