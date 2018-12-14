@@ -15,12 +15,14 @@ public class ModPlugin : GamePlugin
     {
         get { return new Version(0, 0, 0); }
     }
-    
+
+
+
     public void OnLoad()
     {
         string FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name + "/plugin.json");
         UpdateJSON(FilePath);
-        ModProblem.AddModProblem(name, FilePath, "Mod Version " + version, false);
+        ModProblem.AddModProblem(name + "   v" + version, FilePath, string.Empty, false);
     }
 
     public void OnSave()
@@ -34,16 +36,16 @@ public class ModPlugin : GamePlugin
             JObject jObject = JObject.Parse(File.ReadAllText(FilePath));
             string ModVersion = version.ToString();
             string FTDGameVersion = Get.Game.VersionString;
-            
-            bool Result0 = jObject["name"].ToString() != name;
-            bool Result1 = jObject["version"].ToString() != ModVersion;
-            bool Result2 = jObject["gameversion"].ToString() != FTDGameVersion;
 
-            if (Result0 || Result1 || Result2)
+            bool F0 = jObject["name"].ToString() != name;
+            bool F1 = jObject["version"].ToString() != ModVersion;
+            bool F2 = jObject["gameversion"].ToString() != FTDGameVersion;
+
+            if (F0 || F1 || F2)
             {
-                if (Result0) jObject["name"] = name;
-                if (Result1) jObject["version"] = ModVersion;
-                if (Result2) jObject["gameversion"] = FTDGameVersion;
+                if (F0) jObject["name"] = name;
+                if (F1) jObject["version"] = ModVersion;
+                if (F2) jObject["gameversion"] = FTDGameVersion;
 
                 File.WriteAllText(FilePath, jObject.ToString());
             }
