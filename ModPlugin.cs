@@ -22,7 +22,7 @@ public class ModPlugin : GamePlugin
     {
         string FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name + "/plugin.json");
         UpdateJSON(FilePath);
-        ModProblem.AddModProblem(name + "   v" + version, FilePath, string.Empty, false);
+        ModProblem.AddModProblem(name + "  v" + version, FilePath, string.Empty, false);
     }
 
     public void OnSave()
