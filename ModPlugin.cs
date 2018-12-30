@@ -32,10 +32,10 @@ public class ModPlugin : GamePlugin
 
     public void OnLoad()
     {
-        FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name + "/plugin.json");
-        UpdateJSON(FilePath);
+        FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
+        UpdateJSON(Path.Combine(FilePath, "plugin.json"));
         ModProblemOverwriting(name + "  v" + version, FilePath, string.Empty, false);
-        if (SteamInterface.UseSteam && PublishedFileId != 0) UpdateEvent += Update;
+        UpdateEvent += Update;
     }
 
     public void OnSave()
@@ -88,8 +88,15 @@ public class ModPlugin : GamePlugin
 
     public void SlowUpdate(ITimeStep TS)
     {
-        CallResult<SteamUGCRequestUGCDetailsResult_t> UGCDetailsRequest = new CallResult<SteamUGCRequestUGCDetailsResult_t>(Callback);
-        UGCDetailsRequest.Set(SteamUGC.RequestUGCDetails(new PublishedFileId_t(PublishedFileId), 0));
+        if (SteamInterface.UseSteam && PublishedFileId != 0)
+        {
+            CallResult<SteamUGCRequestUGCDetailsResult_t> UGCDetailsRequest = new CallResult<SteamUGCRequestUGCDetailsResult_t>(Callback);
+            UGCDetailsRequest.Set(SteamUGC.RequestUGCDetails(new PublishedFileId_t(PublishedFileId), 0));
+        }
+        else
+        {
+            UpdateEvent -= Update;
+        }
     }
 
     public void Callback(SteamUGCRequestUGCDetailsResult_t pCallback, bool bIOFailure)
