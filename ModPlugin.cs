@@ -38,6 +38,10 @@ public class ModPlugin : GamePlugin
         UpdateEvent += Update;
     }
 
+    public void OnStart()
+    {
+    }
+
     public void OnSave()
     {
     }
@@ -81,6 +85,8 @@ public class ModPlugin : GamePlugin
                 FunctionToCall = SlowUpdate,
                 Period = 0.1f
             });
+
+            OnStart();
         }
 
         DFC.PassageOfTIme(TS);
