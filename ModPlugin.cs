@@ -47,11 +47,7 @@ public class ModPlugin : GamePlugin
 
     public void OnStart()
     {
-        ItemDefinition Item0 = Configured.i.Get<ModificationComponentContainerItem>().Find(new Guid("cdca5dec-eeee-4849-9b2e-73b23e216465"), out bool F0);
-        if (F0) Item0.Code.ClassName = "DGA_PrecisionSpinBlock";
-
-        ItemDefinition Item1 = Configured.i.Get<ModificationComponentContainerItem>().Find(new Guid("564a75cd-8d7c-469b-a4b3-053d772b7d9d"), out bool F1);
-        if (F1) Item1.Code.ClassName = "DGA_HelicopterSpinner";
+        
     }
 
     public void OnSave()
