@@ -1,9 +1,11 @@
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.SteamworksIntegration;
-using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Modding;
+using BrilliantSkies.Modding.Containers;
+using BrilliantSkies.Modding.Types;
 using Newtonsoft.Json.Linq;
 using Steamworks;
+using System;
 using System.IO;
 using static BrilliantSkies.Core.Timing.GameEvents;
 
@@ -24,26 +26,33 @@ public class ModPlugin : GamePlugin
         get { return 0; }
     }
 
+    private bool SWS;
+
+    private SteamAPICall_t UGCDetails;
+
+    private string FilePath;
 
 
-    public string FilePath;
-
-    public DelayedFunctionCaller<ITimeStep> DFC;
 
     public void OnLoad()
     {
+        SWS = SteamInterface.UseSteam && PublishedFileId != 0;
+        if (SWS) UGCDetails = SteamUGC.RequestUGCDetails(new PublishedFileId_t(PublishedFileId), 0);
+
         FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
         UpdateJSON(Path.Combine(FilePath, "plugin.json"));
         ModProblemOverwriting(name + "  v" + version, FilePath, string.Empty, false);
-        UpdateEvent += Update;
+        StartEvent += GameStart;
     }
 
     public void OnStart()
     {
+        
     }
 
     public void OnSave()
     {
+
     }
 
     private void UpdateJSON(string FilePath)
@@ -75,39 +84,18 @@ public class ModPlugin : GamePlugin
         ModProblem.AddModProblem(InitModName, InitModPath, InitDescription, InitIsError);
     }
 
-    public void Update(ITimeStep TS)
+    public void GameStart()
     {
-        if (DFC == null)
-        {
-            DFC = new DelayedFunctionCaller<ITimeStep>();
-            DFC.Add(new DelayedFunction<ITimeStep>
-            {
-                FunctionToCall = SlowUpdate,
-                Period = 0.1f
-            });
+        if (SWS) new CallResult<SteamUGCRequestUGCDetailsResult_t>(Callback).Set(UGCDetails);
 
-            OnStart();
-        }
+        OnStart();
 
-        DFC.PassageOfTIme(TS);
+        StartEvent -= GameStart;
     }
 
-    public void SlowUpdate(ITimeStep TS)
+    public void Callback(SteamUGCRequestUGCDetailsResult_t param, bool bIOFailure)
     {
-        if (SteamInterface.UseSteam && PublishedFileId != 0)
-        {
-            CallResult<SteamUGCRequestUGCDetailsResult_t> UGCDetailsRequest = new CallResult<SteamUGCRequestUGCDetailsResult_t>(Callback);
-            UGCDetailsRequest.Set(SteamUGC.RequestUGCDetails(new PublishedFileId_t(PublishedFileId), 0));
-        }
-        else
-        {
-            UpdateEvent -= Update;
-        }
-    }
-
-    public void Callback(SteamUGCRequestUGCDetailsResult_t pCallback, bool bIOFailure)
-    {
-        string Description = pCallback.m_details.m_rgchDescription;
+        string Description = param.m_details.m_rgchDescription;
 
         if (!string.IsNullOrEmpty(Description))
         {
@@ -124,9 +112,7 @@ public class ModPlugin : GamePlugin
                 }
             }
 
-            if (version.CompareTo(LatestVersion) == -1) ModProblemOverwriting(name + "  v" + version, FilePath, "Old Version", false);
+            if (version.CompareTo(LatestVersion) == -1) ModProblemOverwriting(name + "  v" + version, FilePath, " Update! v" + LatestVersion, false);
         }
-
-        UpdateEvent -= Update;
     }
 }
