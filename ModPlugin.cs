@@ -14,6 +14,8 @@ public class ModPlugin : GamePlugin
 
     private SteamAPICall_t UGCDetails;
     
+    
+    
     public string name
     {
         //Mod Name
