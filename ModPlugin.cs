@@ -112,7 +112,10 @@ public class ModPlugin : GamePlugin
                 }
             }
 
-            if (version.CompareTo(LatestVersion) == -1) ModProblemOverwriting(name + "  v" + version, FilePath, " Update! v" + LatestVersion, false);
+            if (version.CompareTo(LatestVersion) == -1)
+            {
+                ModProblemOverwriting(name + "  v" + version, FilePath, " Update! v" + LatestVersion, false);
+            }
         }
     }
 }
