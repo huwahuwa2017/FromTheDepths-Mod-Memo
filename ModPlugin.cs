@@ -46,6 +46,7 @@ public class ModPlugin : GamePlugin
         FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
         UpdateJSON(Path.Combine(FilePath, "plugin.json"));
         ModProblemOverwriting(name + "  v" + version, FilePath, string.Empty, false);
+        
         StartEvent += GameStart;
     }
 
