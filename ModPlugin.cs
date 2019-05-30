@@ -65,6 +65,7 @@ public class ModPlugin : GamePlugin
         if (File.Exists(FilePath))
         {
             JObject jObject = JObject.Parse(File.ReadAllText(FilePath));
+            
             string ModVersion = version.ToString();
             string FTDGameVersion = Get.Game.VersionString;
 
