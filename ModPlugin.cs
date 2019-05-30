@@ -1,36 +1,36 @@
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.SteamworksIntegration;
 using BrilliantSkies.Modding;
-using BrilliantSkies.Modding.Containers;
-using BrilliantSkies.Modding.Types;
 using Newtonsoft.Json.Linq;
 using Steamworks;
-using System;
 using System.IO;
 using static BrilliantSkies.Core.Timing.GameEvents;
 
 public class ModPlugin : GamePlugin
 {
+    private bool SWS;
+
+    private string FilePath;
+
+    private SteamAPICall_t UGCDetails;
+    
     public string name
     {
+        //Mod Name
         get { return "TestMod"; }
     }
 
     public System.Version version
     {
+        //Mod Version
         get { return new System.Version(0, 0, 0); }
     }
 
     public ulong PublishedFileId
     {
+        //Steam Workshop ID
         get { return 0; }
     }
-
-    private bool SWS;
-
-    private SteamAPICall_t UGCDetails;
-
-    private string FilePath;
 
 
 
@@ -112,7 +112,10 @@ public class ModPlugin : GamePlugin
                 }
             }
 
-            if (version.CompareTo(LatestVersion) == -1) ModProblemOverwriting(name + "  v" + version, FilePath, " Update! v" + LatestVersion, false);
+            if (version.CompareTo(LatestVersion) == -1)
+            {
+                ModProblemOverwriting(name + "  v" + version, FilePath, " Update! v" + LatestVersion, false);
+            }
         }
     }
 }
