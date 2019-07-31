@@ -45,7 +45,7 @@ public class ModPlugin : GamePlugin
 
         FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
         UpdateJSON(Path.Combine(FilePath, "plugin.json"));
-        ModProblemOverwriting(name + "  v" + version, FilePath, string.Empty, false);
+        ModProblemOverwriting(name + "  v" + version, FilePath, "Active!", false);
         
         StartEvent += GameStart;
     }
@@ -120,7 +120,7 @@ public class ModPlugin : GamePlugin
 
             if (version.CompareTo(LatestVersion) == -1)
             {
-                ModProblemOverwriting(name + "  v" + version, FilePath, " Update! v" + LatestVersion, false);
+                ModProblemOverwriting(name + "  v" + version, FilePath, "Active!  NewVersion v" + LatestVersion, false);
             }
         }
     }
