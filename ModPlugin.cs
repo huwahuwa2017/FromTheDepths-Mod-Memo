@@ -8,119 +8,122 @@ using Steamworks;
 using System.IO;
 using static BrilliantSkies.Core.Timing.GameEvents;
 
-public class ModPlugin : GamePlugin
+namespace TestMod
 {
-    private bool SWS;
-
-    private string FilePath;
-
-    private SteamAPICall_t UGCDetails;
-    
-    
-    
-    public string name
+    public class ModPlugin : GamePlugin
     {
-        //Mod Name
-        get { return "TestMod"; }
-    }
+        private bool SWS;
 
-    public System.Version version
-    {
-        //Mod Version
-        get { return new System.Version(0, 0, 0); }
-    }
+        private string FilePath;
 
-    public ulong PublishedFileId
-    {
-        //Steam Workshop ID
-        get { return 0; }
-    }
+        private SteamAPICall_t UGCDetails;
 
 
 
-    public void OnLoad()
-    {
-        SWS = SteamInterface.UseSteam && PublishedFileId != 0;
-        if (SWS) UGCDetails = SteamUGC.RequestUGCDetails(new PublishedFileId_t(PublishedFileId), 0);
-
-        FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
-        UpdateJSON(Path.Combine(FilePath, "plugin.json"));
-        ModProblemOverwriting(name + "  v" + version, FilePath, "Active!", false);
-        
-        StartEvent += GameStart;
-    }
-
-    public void OnStart()
-    {
-        
-    }
-
-    public void OnSave()
-    {
-
-    }
-
-    private void UpdateJSON(string FilePath)
-    {
-        if (File.Exists(FilePath))
+        public string name
         {
-            JObject jObject = JObject.Parse(File.ReadAllText(FilePath));
-            
-            string ModVersion = version.ToString();
-            string FTDGameVersion = Get.Game.VersionString;
-
-            bool F0 = jObject["name"].ToString() != name;
-            bool F1 = jObject["version"].ToString() != ModVersion;
-            bool F2 = jObject["gameversion"].ToString() != FTDGameVersion;
-
-            if (F0 || F1 || F2)
-            {
-                if (F0) jObject["name"] = name;
-                if (F1) jObject["version"] = ModVersion;
-                if (F2) jObject["gameversion"] = FTDGameVersion;
-
-                File.WriteAllText(FilePath, jObject.ToString());
-            }
+            //Mod Name
+            get { return "TestMod"; }
         }
-    }
 
-    public void ModProblemOverwriting(string InitModName, string InitModPath, string InitDescription, bool InitIsError)
-    {
-        ModProblem.AllModProblems.Remove(InitModPath);
-        ModProblem.AddModProblem(InitModName, InitModPath, InitDescription, InitIsError);
-    }
-
-    public void GameStart()
-    {
-        if (SWS) new CallResult<SteamUGCRequestUGCDetailsResult_t>(Callback).Set(UGCDetails);
-
-        OnStart();
-
-        StartEvent -= GameStart;
-    }
-
-    public void Callback(SteamUGCRequestUGCDetailsResult_t param, bool bIOFailure)
-    {
-        string Description = param.m_details.m_rgchDescription;
-
-        if (!string.IsNullOrEmpty(Description))
+        public System.Version version
         {
-            string InputLine = string.Empty;
-            StringReader Reader = new StringReader(Description);
-            System.Version LatestVersion = version;
+            //Mod Version
+            get { return new System.Version(0, 0, 0); }
+        }
 
-            while ((InputLine = Reader.ReadLine()) != null)
+        public ulong PublishedFileId
+        {
+            //Steam Workshop ID
+            get { return 0; }
+        }
+
+
+
+        public void OnLoad()
+        {
+            SWS = SteamInterface.UseSteam && PublishedFileId != 0;
+            if (SWS) UGCDetails = SteamUGC.RequestUGCDetails(new PublishedFileId_t(PublishedFileId), 0);
+
+            FilePath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
+            UpdateJSON(Path.Combine(FilePath, "plugin.json"));
+            ModProblemOverwriting(name + "  v" + version, FilePath, "Active!", false);
+
+            StartEvent += GameStart;
+        }
+
+        public void OnStart()
+        {
+
+        }
+
+        public void OnSave()
+        {
+
+        }
+
+        private void UpdateJSON(string FilePath)
+        {
+            if (File.Exists(FilePath))
             {
-                if (InputLine.StartsWith("Mod Version "))
+                JObject jObject = JObject.Parse(File.ReadAllText(FilePath));
+
+                string ModVersion = version.ToString();
+                string FTDGameVersion = Get.Game.VersionString;
+
+                bool F0 = jObject["name"].ToString() != name;
+                bool F1 = jObject["version"].ToString() != ModVersion;
+                bool F2 = jObject["gameversion"].ToString() != FTDGameVersion;
+
+                if (F0 || F1 || F2)
                 {
-                    System.Version.TryParse(InputLine.Remove(0, 11), out LatestVersion);
-                    break;
+                    if (F0) jObject["name"] = name;
+                    if (F1) jObject["version"] = ModVersion;
+                    if (F2) jObject["gameversion"] = FTDGameVersion;
+
+                    File.WriteAllText(FilePath, jObject.ToString());
                 }
             }
+        }
 
-            if (version.CompareTo(LatestVersion) == -1)
+        public void ModProblemOverwriting(string InitModName, string InitModPath, string InitDescription, bool InitIsError)
+        {
+            ModProblem.AllModProblems.Remove(InitModPath);
+            ModProblem.AddModProblem(InitModName, InitModPath, InitDescription, InitIsError);
+        }
+
+        public void GameStart()
+        {
+            if (SWS) new CallResult<SteamUGCRequestUGCDetailsResult_t>(Callback).Set(UGCDetails);
+
+            OnStart();
+
+            StartEvent -= GameStart;
+        }
+
+        public void Callback(SteamUGCRequestUGCDetailsResult_t param, bool bIOFailure)
+        {
+            string Description = param.m_details.m_rgchDescription;
+
+            if (!string.IsNullOrEmpty(Description))
             {
-                ModProblemOverwriting(name + "  v" + version, FilePath, "Active!  NewVersion v" + LatestVersion, false);
+                string InputLine = string.Empty;
+                StringReader Reader = new StringReader(Description);
+                System.Version LatestVersion = version;
+
+                while ((InputLine = Reader.ReadLine()) != null)
+                {
+                    if (InputLine.StartsWith("Mod Version "))
+                    {
+                        System.Version.TryParse(InputLine.Remove(0, 11), out LatestVersion);
+                        break;
+                    }
+                }
+
+                if (version.CompareTo(LatestVersion) == -1)
+                {
+                    ModProblemOverwriting(name + "  v" + version, FilePath, "Active!  NewVersion v" + LatestVersion, false);
+                }
             }
         }
     }
