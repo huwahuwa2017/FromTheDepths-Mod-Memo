@@ -8,7 +8,7 @@ using Steamworks;
 using System.IO;
 using static BrilliantSkies.Core.Timing.GameEvents;
 
-namespace DLLMerge
+namespace TestMod
 {
     public class ModPlugin : GamePlugin
     {
@@ -23,7 +23,7 @@ namespace DLLMerge
         public string name
         {
             //Mod Name
-            get { return "DLLMerge"; }
+            get { return "TestMod"; }
         }
 
         public System.Version version
