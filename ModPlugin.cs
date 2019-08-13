@@ -1,3 +1,5 @@
+//Reference : Core.dll, Modding.dll, Newtonsoft.Json.dll
+
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Modding;
 using Newtonsoft.Json.Linq;
