@@ -2,8 +2,10 @@
 
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Modding;
+using Harmony;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using System.Reflection;
 using static BrilliantSkies.Core.Timing.GameEvents;
 
 namespace TestMod
@@ -35,6 +37,9 @@ namespace TestMod
 
         public void OnStart()
         {
+            HarmonyInstance harmony = HarmonyInstance.Create("Astraea_balance_Mod_Patch");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+
             StartEvent -= OnStart;
         }
 
@@ -46,19 +51,16 @@ namespace TestMod
         private void UpdateJSON(string FilePath)
         {
             string ModVersion = version.ToString();
-            string FTDVersion = Get.Game.VersionString;
 
             JObject jObject = JObject.Parse(File.ReadAllText(FilePath));
 
             bool F0 = jObject["name"].ToString() != name;
             bool F1 = jObject["version"].ToString() != ModVersion;
-            bool F2 = jObject["gameversion"].ToString() != FTDVersion;
 
-            if (F0 || F1 || F2)
+            if (F0 || F1)
             {
                 if (F0) jObject["name"] = name;
                 if (F1) jObject["version"] = ModVersion;
-                if (F2) jObject["gameversion"] = FTDVersion;
 
                 File.WriteAllText(FilePath, jObject.ToString());
             }
