@@ -2,10 +2,8 @@
 
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Modding;
-using Harmony;
 using Newtonsoft.Json.Linq;
 using System.IO;
-using System.Reflection;
 using static BrilliantSkies.Core.Timing.GameEvents;
 
 namespace TestMod
@@ -37,9 +35,6 @@ namespace TestMod
 
         public void OnStart()
         {
-            HarmonyInstance harmony = HarmonyInstance.Create("Astraea_balance_Mod_Patch");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
-
             StartEvent -= OnStart;
         }
 
