@@ -1,19 +1,19 @@
 //Reference : Core.dll, Modding.dll, Newtonsoft.Json.dll
 
 using BrilliantSkies.Core.Constants;
+using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Modding;
 using Newtonsoft.Json.Linq;
 using System.IO;
-using static BrilliantSkies.Core.Timing.GameEvents;
 
-namespace TestMod
+namespace StringReplacement
 {
     public class ModPlugin : GamePlugin
     {
         public string name
         {
             //Mod Name
-            get { return "TestMod"; }
+            get { return "StringReplacement"; }
         }
 
         public System.Version version
@@ -28,14 +28,14 @@ namespace TestMod
         {
             string ModPath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
             UpdateJSON(Path.Combine(ModPath, "plugin.json"));
-            ModProblemOverwrite(name + "  v" + version, ModPath, "Active!", false);
+            ModProblemOverwrite($"{name}  v{version}  Active!", ModPath, string.Empty, false);
 
-            StartEvent += OnStart;
+            GameEvents.StartEvent += OnStart;
         }
 
         public void OnStart()
         {
-            StartEvent -= OnStart;
+            GameEvents.StartEvent -= OnStart;
         }
 
         public void OnSave()
@@ -46,25 +46,28 @@ namespace TestMod
         private void UpdateJSON(string FilePath)
         {
             string ModVersion = version.ToString();
+            string FTDGameVersion = Get.Game.VersionString;
 
             JObject jObject = JObject.Parse(File.ReadAllText(FilePath));
 
             bool F0 = jObject["name"].ToString() != name;
             bool F1 = jObject["version"].ToString() != ModVersion;
+            bool F2 = jObject["gameversion"].ToString() != FTDGameVersion;
 
-            if (F0 || F1)
+            if (F0 || F1 || F2)
             {
                 if (F0) jObject["name"] = name;
                 if (F1) jObject["version"] = ModVersion;
+                if (F2) jObject["gameversion"] = FTDGameVersion;
 
                 File.WriteAllText(FilePath, jObject.ToString());
             }
         }
 
-        public void ModProblemOverwrite(string InitModName, string InitModPath, string InitDescription, bool InitIsError)
+        public void ModProblemOverwrite(string name, string path, string description, bool isError)
         {
-            ModProblem.AllModProblems.Remove(InitModPath);
-            ModProblem.AddModProblem(InitModName, InitModPath, InitDescription, InitIsError);
+            ModProblems.AllModProblems.Remove(path);
+            ModProblems.AddModProblem(name, path, description, isError);
         }
     }
 }
