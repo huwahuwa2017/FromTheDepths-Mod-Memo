@@ -6,14 +6,14 @@ using BrilliantSkies.Modding;
 using Newtonsoft.Json.Linq;
 using System.IO;
 
-namespace StringReplacement
+namespace ModName
 {
     public class ModPlugin : GamePlugin
     {
         public string name
         {
             //Mod Name
-            get { return "StringReplacement"; }
+            get { return "ModName"; }
         }
 
         public System.Version version
