@@ -26,11 +26,11 @@ namespace ModName
 
         public void OnLoad()
         {
+            GameEvents.StartEvent += OnStart;
+
             string ModPath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
             UpdateJSON(Path.Combine(ModPath, "plugin.json"));
             ModProblemOverwrite($"{name}  v{version}  Active!", ModPath, string.Empty, false);
-
-            GameEvents.StartEvent += OnStart;
         }
 
         public void OnStart()
