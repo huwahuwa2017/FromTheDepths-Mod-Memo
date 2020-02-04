@@ -132,7 +132,7 @@ namespace TestMod
 
                     while ((InputLine = Reader.ReadLine()) != null)
                     {
-                        if (InputLine.StartsWith("Latest mod version "))
+                        if (InputLine.StartsWith("Mod latest version "))
                         {
                             LatestVersion = System.Version.Parse(InputLine.Remove(0, 18));
                             break;
