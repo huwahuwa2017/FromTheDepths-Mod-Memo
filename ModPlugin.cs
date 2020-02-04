@@ -1,4 +1,4 @@
-﻿//Reference : Assembly-CSharp-firstpass.dll, Core.dll, Modding.dll, Newtonsoft.Json.dll
+//Reference : Assembly-CSharp-firstpass.dll, Core.dll, Modding.dll, Newtonsoft.Json.dll
 
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.SteamworksIntegration;
@@ -11,11 +11,11 @@ using System;
 using System.IO;
 using BrilliantSkies.Core.Timing;
 
-namespace AdvancedMimicUi
+namespace TestMod
 {
     public class ModPlugin : GamePlugin
     {
-        private bool useSteam;
+        private bool UseSteam;
 
         private string ModPath;
 
@@ -28,7 +28,7 @@ namespace AdvancedMimicUi
         public string name
         {
             //Mod Name
-            get { return "AdvancedMimicUi"; }
+            get { return "TestMod"; }
         }
 
         public System.Version version
@@ -40,14 +40,14 @@ namespace AdvancedMimicUi
         public ulong PublishedFileId
         {
             //Steam Workshop ID
-            get { return 1513554113; }
+            get { return 0; }
         }
 
 
 
         public void OnLoad()
         {
-            useSteam = SteamInterface.UseSteam && PublishedFileId != 0;
+            UseSteam = SteamInterface.UseSteam && PublishedFileId != 0;
 
             ModPath = Path.Combine(Get.ProfilePaths.RootModDir().ToString(), name);
             UpdateJSON(Path.Combine(ModPath, "plugin.json"));
@@ -103,7 +103,7 @@ namespace AdvancedMimicUi
 
         private void SteamUGCRequest(ITimeStep t)
         {
-            if (useSteam && ++RequestCount <= 4)
+            if (UseSteam && ++RequestCount <= 4)
             {
                 Console.WriteLine("SteamUGCRequest : " + RequestCount);
 
