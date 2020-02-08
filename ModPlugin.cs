@@ -73,17 +73,14 @@ namespace TestMod
                 JObject jObject = JObject.Parse(File.ReadAllText(pluginPath));
 
                 string ModVersion = version.ToString();
-                string FTDGameVersion = Get.Game.VersionString;
 
                 bool F0 = jObject["name"].ToString() != name;
                 bool F1 = jObject["version"].ToString() != ModVersion;
-                bool F2 = jObject["gameversion"].ToString() != FTDGameVersion;
 
-                if (F0 || F1 || F2)
+                if (F0 || F1)
                 {
                     if (F0) jObject["name"] = name;
                     if (F1) jObject["version"] = ModVersion;
-                    if (F2) jObject["gameversion"] = FTDGameVersion;
 
                     File.WriteAllText(pluginPath, jObject.ToString());
                 }
