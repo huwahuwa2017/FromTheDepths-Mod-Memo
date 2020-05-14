@@ -1,4 +1,4 @@
-//Reference : Assembly-CSharp-firstpass.dll, Core.dll, Modding.dll, Newtonsoft.Json.dll
+//Reference : Assembly-CSharp-firstpass.dll, Core.dll, Modding.dll, Newtonsoft.Json.dll, Ui.dll
 
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.SteamworksIntegration;
