@@ -1,6 +1,7 @@
-﻿//Reference : Assembly-CSharp-firstpass.dll, Core.dll, Modding.dll, Newtonsoft.Json.dll, Steamworks.dll, Ui.dll
+//Reference : Assembly-CSharp-firstpass.dll, Core.dll, Modding.dll, Newtonsoft.Json.dll, Steamworks.dll, Ui.dll
 
 using BrilliantSkies.Core.Constants;
+using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Modding;
 using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Displayer.Types;
@@ -8,7 +9,6 @@ using Newtonsoft.Json.Linq;
 using Steamworks;
 using System;
 using System.IO;
-using BrilliantSkies.Core.Timing;
 
 namespace TestMod
 {
