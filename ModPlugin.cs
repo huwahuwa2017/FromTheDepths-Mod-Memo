@@ -71,6 +71,16 @@ namespace TestMod
         {
         }
 
+        private void AssemblyLoad(params string[] names)
+        {
+            string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            foreach (string name in names)
+            {
+                Assembly.LoadFile(Path.Combine(folderPath, name));
+            }
+        }
+
         private void UpdateJSON(string pluginPath)
         {
             if (File.Exists(pluginPath))
