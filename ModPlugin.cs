@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Steamworks;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace TestMod
 {
